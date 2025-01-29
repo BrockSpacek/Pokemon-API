@@ -1,5 +1,6 @@
 // alert("This site only includes the first five generations of Pokemon")
 
+// Element IDs
 let PokemonName = document.getElementById("PokemonName");
 let PokemonType = document.getElementById("PokemonType");
 let PokemonLocation = document.getElementById("PokemonLocation");
@@ -12,11 +13,12 @@ let PokemonImage = document.getElementById("PokemonImage");
 let Pokedex = document.getElementById("Pokedex");
 let PokemonInput = document.getElementById("PokemonInput");
 
-let randomBtn = document.getElementById("randomBtn")
-let heartBtn = document.getElementById("heartBtn")
-let shinyBtn = document.getElementById("shinyBtn")
-let getFavBtn = document.getElementById("getFavBtn")
+let randomBtn = document.getElementById("randomBtn");
+let heartBtn = document.getElementById("heartBtn");
+let shinyBtn = document.getElementById("shinyBtn");
+let getFavBtn = document.getElementById("getFavBtn");
 
+// API Fetch
 const PokemonNameApi = async (names) => {
   const promise = await fetch(`https://pokeapi.co/api/v2/pokemon/${names}`);
   const data = await promise.json();
@@ -24,6 +26,7 @@ const PokemonNameApi = async (names) => {
   return data;
 };
 
+// Global Variables
 let nameOfPokemon = "";
 let idOfPokemon = 0;
 let abilitiesOfPokemon = [];
@@ -34,6 +37,8 @@ let imageOfPokemon;
 let evolutionsOfPokemon = [];
 
 let isGenOneThroughFive = false;
+
+// Search Function
 
 Pokedex.addEventListener("keydown", async (event) => {
   nameOfPokemon = "";
@@ -72,7 +77,7 @@ Pokedex.addEventListener("keydown", async (event) => {
 
       PokemonName.innerText = nameOfPokemon;
       PokemonId.innerText = idOfPokemon;
-      PokemonType.innerText = typesOfPokemon.join(" | ");
+      PokemonType.innerText = `Types: ${typesOfPokemon.join(" | ")}`;
       PokemonAbilities.innerText = abilitiesOfPokemon.join(" | ");
       PokemonMoves.innerText = movesOfPokemon.join(" | ");
       PokemonImage.src = data.sprites.front_default;

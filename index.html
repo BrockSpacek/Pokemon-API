@@ -12,16 +12,20 @@
 
 <body>
 
-    <div id="Pokedex" class=" mt-10 ml-1/5 flex justify-items-center">
+    <div id="Pokedex" class="mt-10 ml-[10%] flex justify-items-center">
         <div>
             <input type="text" id="PokemonInput"
-                class="bg-[#B03535] text-white text-3xl h-[75px] w-[570px] rounded-[20px]"
+                class="bg-[#B03535] text-white text-3xl h-[75px] w-[500px] rounded-[20px]"
                 placeholder="  Search Pokedex..." required />
 
         </div>
 
-        <div>
-            <img id="randomBtn" class="h-[75px] w-[75px] rounded-[20px] bg-[#B03535]" src="./assets/Random Button.png" alt="Random button">
+        <div class="ml-[5%]">
+            <img id="randomBtn" class="h-[75px] w-[75px] rounded-[20px] bg-[#B03535]" src="./assets/Random_Button-removebg-preview.png" alt="Random button">
+        </div>
+
+        <div class="ml-[7%]">
+            <button class="h-[75px] w-[215px] rounded-[20px] bg-[#B03535] text-3xl">Favorites</button>
         </div>
     </div>
 
@@ -30,34 +34,38 @@
 
 
 
-            <div class="flex content-center place-content-center">
+            <div class="flex content-center place-content-center mt-2">
                 <div class="text-4xl text-white mr-3" id="PokemonName"> Name</div>
                 <div class="text-4xl text-white ml-3" id="PokemonId"> Id</div>
             </div>
 
-            <div class="place-items-center">
-                <img id="PokemonImage" class="lg:h-17/50 lg:w-17/50" alt="image of Pokemon">
-            </div>
-
-            <div>
-                <div>
-                    <div class="text-4xl font-bold italic underline text-white">About</div>
-                    <div class="text-3xl text-white" id="PokemonType"> Type</div>
-                    <div class="text-3xl text-white" id="PokemonLocation"> Location</div>
-                </div>
-
-                <div>
-                    <div class="text-4xl font-bold italic underline text-white">Moves</div>
-                    <div class="text-3xl text-white max-h-[100px] w-1/3 overflow-y-auto" id="PokemonMoves"></div>
-                </div>
-
-                <div>
-                    <div class="text-4xl font-bold italic underline text-white">Abilites</div>
-                    <div class="text-3xl text-white" id="PokemonAbilities"></div>
+            <div class="ml-[33%] content-center place-content-center lg:h-2/3 lg:w-17/50">
+                <img id="PokemonImage" class="w-full h-full" alt="image of Pokemon">
+                <div class="flex content-center place-content-center">
+                    <img class="w-[64px] h-[64px]" src="./assets/Heart_Icon-removebg-preview.png" alt="Heart icon">
+                    <img class="w-[64px] h-[64px]" src="./assets/Shiny_Image-removebg-preview.png" alt="Shiny Icon">
                 </div>
             </div>
 
-            <div>
+            <div class="-mt-[425px] ml-[2%]">
+                <div>
+                    <div class="text-4xl font-bold italic underline text-white ml-[10%]">About</div>
+                    <div class="text-3xl text-white mt-[20px]" id="PokemonType"></div>
+                    <div class="text-3xl text-white mt-[40px]" id="PokemonLocation">Location</div>
+                </div>
+
+                <div class="mt-[45px]">
+                    <div class="text-4xl font-bold italic underline text-white ml-[10%]">Moves</div>
+                    <div class="text-3xl text-white max-h-[130px] w-1/3 overflow-y-auto" id="PokemonMoves"></div>
+                </div>
+
+                <div class="mt-[45px]">
+                    <div class="text-4xl font-bold italic underline text-white ml-[10%]">Abilites</div>
+                    <div class="text-3xl text-white max-h-[150px] w-2/5" id="PokemonAbilities"></div>
+                </div>
+            </div>
+
+            <div class="flex place-content-end -mt-[510px] mr-[125px]">
                 <div class="text-4xl font-bold italic underline text-white">Evolutions</div>
                 <div class="text-3xl text-white" id="PokemonEvolution"> </div>
             </div>
