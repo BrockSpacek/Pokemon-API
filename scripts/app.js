@@ -1,6 +1,7 @@
 // alert("This site only includes the first five generations of Pokemon")
 
-import {saveToLocalStorage, getFromLocalStorage, removeFromLocalStorage} from "./localstorage.js"
+
+import { saveToLocalStorage, getFromLocalStorage, removeFromLocalStorage } from "./localstorage.js";
 
 // Element IDs
 let PokemonName = document.getElementById("PokemonName");
@@ -20,6 +21,7 @@ let randomBtn = document.getElementById("randomBtn");
 let heartBtn = document.getElementById("heartBtn");
 let shinyBtn = document.getElementById("shinyBtn");
 let getFavBtn = document.getElementById("getFavBtn");
+
 
 // API Fetch
 const PokemonNameApi = async (names) => {
@@ -49,7 +51,7 @@ let dullImage = "";
 
 let isGenOneThroughFive = false;
 let favoritesIsOpen = false;
-let favoritedPokemon = false;
+
 
 // Reset Function 
 
@@ -98,14 +100,15 @@ randomBtn.addEventListener("click", async()=>{
 
  getFavBtn.addEventListener('click', () => {
     if(favoritesIsOpen == false){
-        loadFavorites();
         favoritesIsOpen = true
-        favoriteTab.className = "bg-[#B03535] h-[200px] w-[1/5]"
+
+        favoriteTab.className = "bg-[#B03535] h-1/5 w-[200px] rounded-[10px]"
 
     }else{
-        favoritesIsOpen = false
-        favoriteTab.className = "bg-[#B03535] h-[200px] w-[1/5] hide"
-    }
+       favoritesIsOpen = false
+       favoriteTab.className = " bg-[#B03535] h-1/5 w-[200px] rounded-[10px hide"
+      
+   }
 })
 
 
@@ -125,6 +128,9 @@ async function PokeLogic(pokeSearch) {
 
   if (isGenOneThroughFive == true) {
     nameOfPokemon = data.name[0].toUpperCase() + data.name.slice(1);
+
+    updateHeartButtonState(); 
+
     idOfPokemon = data.id
 
     let locationData = await LocationApi(idOfPokemon);
@@ -175,44 +181,64 @@ PokeLogic("Bulbasaur");
 
 // Local Storage
 
+function isPokemonFavorited(pokemonName) {
+    const favorites = getFromLocalStorage();
+    return favorites.includes(pokemonName);
+}
+
+
 const storedValue = document.getElementById('storedValue');
 
-
 heartBtn.addEventListener('click', () => {
-  if(favoritedPokemon == false){
-        let storageValue = nameOfPokemon
-        saveToLocalStorage(storageValue);
-        favoritedPokemon = true
-    } 
-    else
-    {
-        removeFromLocalStorage(favorites); 
-         pTag.remove(); 
-         favoritedPokemon = false
+    
+    if(!isPokemonFavorited(nameOfPokemon)) {
+        saveToLocalStorage(nameOfPokemon);
+        console.log(`Added to Favorites ${nameOfPokemon}`);
+        
+        heartBtn.classList.add('favorited');
+    } else {
+        removeFromLocalStorage(nameOfPokemon);
+        console.log(`Removed from Favorites: ${nameOfPokemon}`);
+        
+        heartBtn.classList.remove('favorited');
     }
+    loadFavorites();
 });
 
-
-
-
 async function loadFavorites() {
-  const storedFavorites = getFromLocalStorage();
-  
-  storedValue.innerHTML = ''; 
-  
-  storedFavorites.forEach(favorites => {
-    let pTag = document.createElement('p');
-  
+    const storedFavorites = getFromLocalStorage();
+    favoriteTab.innerHTML = '';  
     
-    pTag.innerText = favorites;
-    
-    pTag.addEventListener('click', function() {
-      favoritesLoading(favorites);  
-    });
-    
-    pTag.appendChild(removeButton);
-    storedValue.appendChild(pTag);  
-  });
+    for (const pokemon of storedFavorites) {
+        const pTag = document.createElement('p');
+        const removeButton = document.createElement('button');
+        removeButton.innerText = "X";
+        removeButton.classList.add('m-2');
+
+        removeButton.addEventListener('click', (e) => {
+            removeFromLocalStorage(pokemon);
+          
+            if (pokemon === nameOfPokemon) {
+                heartBtn.classList.remove('favorited');
+            }
+            loadFavorites();
+        });
+
+        pTag.className = "text-center text-white text-2xl";
+        pTag.innerText = pokemon;
+        pTag.appendChild(removeButton);
+        favoriteTab.appendChild(pTag);
+    }
+}
+
+function updateHeartButtonState() {
+    if (isPokemonFavorited(nameOfPokemon)) {
+        heartBtn.classList.add('favorited');
+    } else {
+        heartBtn.classList.remove('favorited');
+    }
 }
 
 loadFavorites();
+
+
