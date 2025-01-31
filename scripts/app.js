@@ -38,6 +38,20 @@ const LocationApi = async (idOfPokemon) => {
     return locationData;
 }
 
+
+const getPokemonApi = async(pokemon) =>{
+    const fetchData = await fetch (`https://pokeapi.co/api/v2/pokemon-species/${pokemon}/`)
+    const data = await fetchData.json()
+
+    return data
+}
+const getEvolutionApi = async(evolutionChain) =>{
+    const fetchData = await fetch(evolutionChain)
+    const data = await fetchData.json()
+
+    return data
+}
+
 // Global Variables
 let nameOfPokemon = "";
 let idOfPokemon = 0;
@@ -48,6 +62,7 @@ let locationOfPokemon = [];
 let evolutionsOfPokemon = [];
 let shinyImage = "";
 let dullImage = "";
+let evolutionChain= "";
 
 let isGenOneThroughFive = false;
 let favoritesIsOpen = false;
@@ -65,6 +80,7 @@ function PokeClear(){
     evolutionsOfPokemon = [];
     shinyImage = "";
     dullImage = "";
+
     
     isGenOneThroughFive = false;
 
@@ -98,17 +114,17 @@ randomBtn.addEventListener("click", async()=>{
     PokeLogic(randomID)
 })
 
- getFavBtn.addEventListener('click', () => {
-    if(favoritesIsOpen == false){
-        favoritesIsOpen = true
+getFavBtn.addEventListener("click", () => {
+    if (!favoritesIsOpen) {
+        favoritesIsOpen = true;
+        favoriteTab.classList.remove("hide");
+        favoriteTab.classList.add("show");
+    } else {
+        favoritesIsOpen = false;
+        favoriteTab.classList.remove("show");
+        favoriteTab.classList.add("hide");
+    }
 
-        favoriteTab.className = "bg-[#B03535] h-1/5 w-[200px] rounded-[10px]"
-
-    }else{
-       favoritesIsOpen = false
-       favoriteTab.className = " bg-[#B03535] h-1/5 w-[200px] rounded-[10px hide"
-      
-   }
 })
 
 
@@ -116,24 +132,28 @@ randomBtn.addEventListener("click", async()=>{
 // Search Logic
 
 async function PokeLogic(pokeSearch) {
-  let data = await PokemonNameApi(pokeSearch);
+    let data = await PokemonNameApi(pokeSearch);
   
+    if (data.id > 649) {
+        console.log("That pokemon is not in our Pokedex! Please try again");
+        return;
+    } else {
+        isGenOneThroughFive = true;
+    }
 
-  if (data.id > 649) {
-    console.log("That pokemon is not in our Pokedex! Please try again");
-  } else {
-    isGenOneThroughFive = true;
-  }
+    if (isGenOneThroughFive) {
+        nameOfPokemon = data.name[0].toUpperCase() + data.name.slice(1);
+
+        updateHeartButtonState(); 
+
+        idOfPokemon = data.id;
+
+        let locationData = await LocationApi(idOfPokemon);
+        let speciesData = await getPokemonApi(pokeSearch); 
 
 
-  if (isGenOneThroughFive == true) {
-    nameOfPokemon = data.name[0].toUpperCase() + data.name.slice(1);
-
-    updateHeartButtonState(); 
-
-    idOfPokemon = data.id
-
-    let locationData = await LocationApi(idOfPokemon);
+    console.log(speciesData)
+   
 
     data.types.forEach((types) => {
       types.type.name[0].toUpperCase() + types.type.name.slice(1);
@@ -207,7 +227,7 @@ heartBtn.addEventListener('click', () => {
 
 async function loadFavorites() {
     const storedFavorites = getFromLocalStorage();
-    favoriteTab.innerHTML = '';  
+    storedValue.innerHTML = '';  
     
     for (const pokemon of storedFavorites) {
         const pTag = document.createElement('p');
@@ -224,10 +244,10 @@ async function loadFavorites() {
             loadFavorites();
         });
 
-        pTag.className = "text-center text-white text-2xl";
+        pTag.className = "text-center text-white ";
         pTag.innerText = pokemon;
         pTag.appendChild(removeButton);
-        favoriteTab.appendChild(pTag);
+        storedValue.appendChild(pTag);
     }
 }
 
