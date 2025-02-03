@@ -63,6 +63,7 @@ let evolutionsOfPokemon = [];
 let shinyImage = "";
 let dullImage = "";
 let evolutionChain= "";
+let evolutionNames = []
 
 let isGenOneThroughFive = false;
 let favoritesIsOpen = false;
@@ -80,6 +81,9 @@ function PokeClear(){
     evolutionsOfPokemon = [];
     shinyImage = "";
     dullImage = "";
+    evolutionNames = []
+    evolutionChain= "";
+    evolutionsOfPokemon = [];
 
     
     isGenOneThroughFive = false;
@@ -149,7 +153,8 @@ async function PokeLogic(pokeSearch) {
         idOfPokemon = data.id;
 
         let locationData = await LocationApi(idOfPokemon);
-        let speciesData = await getPokemonApi(pokeSearch); 
+        let speciesData = await getPokemonApi(pokeSearch);
+        evolutionChain = speciesData.evolution_chain.url; 
 
 
     console.log(speciesData)
@@ -183,6 +188,31 @@ async function PokeLogic(pokeSearch) {
         PokemonLocation.innerText = " Locations: N/A"
     }
 
+    if(chainData.chain.evolves_to.length != null){
+
+        if (chainData.chain.evolves_to.length > 1){
+            for (let i = 0; i < chainData.chain.evolves_to.length; i++){
+                let pokemonID = await getPokemonApi(chainData.chain.evolves_to[i].species.name)
+                if(pokemonID.id < 650){
+                    evolutionNames.push(chainData.chain.evolves_to[i].species.name)
+                }
+            }
+        }
+        else{
+                let evoChain = chainData.chain;
+                do {
+                    let checkPokeId = await getPokemonApi(newChain.species.name)
+                    if (checkPokeId.id < 650){
+                        evolutionNames.push(newChain.species.name)
+                    }
+                    
+                    evoChain = newChain.evolves_to[0];
+                } 
+                while (evoChain != null);
+            }
+        }
+    }
+
     shinyImage = data.sprites.front_shiny;
     dullImage = data.sprites.front_default;
 
@@ -194,7 +224,7 @@ async function PokeLogic(pokeSearch) {
     PokemonMoves.innerText = movesOfPokemon.join(" | ");
     PokemonImage.src = dullImage;
   }
-}
+
 
 PokeLogic("Bulbasaur");
 
