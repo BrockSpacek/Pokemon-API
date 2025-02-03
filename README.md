@@ -28,5 +28,8 @@ Fully Responsive using Tailwind CSS https://tailwindcss.com
 Have a Prototype in Figma (Desktop, Tablet, Mobile)
 
 Peer Review:
+ Charles Orr
+
+ i really like the look of your website, only issues i could see were 1. eevee only shows one evolution 2. the heart doesnt change when favorited 3. the cursor doesnt change when hovering over a button, aside from those things i noticed i think you did a fantastic job, keep it up :)
 
 Comments
