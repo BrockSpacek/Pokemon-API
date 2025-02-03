@@ -157,6 +157,7 @@ async function PokeLogic(pokeSearch) {
     let data = await PokemonNameApi(pokeSearch);
   
     if (data.id > 649) {
+        alert("Please search a pokemon in Gen 1-5 up to #649")
         console.log("That pokemon is not in our Pokedex! Please try again");
         return;
     } else {
