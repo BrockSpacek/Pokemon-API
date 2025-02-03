@@ -12,6 +12,14 @@ let PokemonMoves = document.getElementById("PokemonMoves");
 let PokemonAbilities = document.getElementById("PokemonAbilities");
 let PokemonEvolution = document.getElementById("PokemonEvolution");
 let PokemonImage = document.getElementById("PokemonImage");
+let PokemonName2 = document.getElementById("PokemonName2");
+let PokemonType2 = document.getElementById("PokemonType2");
+let PokemonLocation2 = document.getElementById("PokemonLocation2");
+let PokemonId2 = document.getElementById("PokemonId2");
+let PokemonMoves2 = document.getElementById("PokemonMoves2");
+let PokemonAbilities2 = document.getElementById("PokemonAbilities2");
+let PokemonEvolution2 = document.getElementById("PokemonEvolution2");
+let PokemonImage2 = document.getElementById("PokemonImage2");
 
 let Pokedex = document.getElementById("Pokedex");
 let PokemonInput = document.getElementById("PokemonInput");
@@ -20,6 +28,8 @@ let favoriteTab = document.getElementById('favoriteTab');
 let randomBtn = document.getElementById("randomBtn");
 let heartBtn = document.getElementById("heartBtn");
 let shinyBtn = document.getElementById("shinyBtn");
+let heartBtn2 = document.getElementById("heartBtn2");
+let shinyBtn2 = document.getElementById("shinyBtn2");
 let getFavBtn = document.getElementById("getFavBtn");
 
 
@@ -111,6 +121,14 @@ shinyBtn.addEventListener("click", () => {
   }
 });
 
+shinyBtn2.addEventListener("click", () => {
+    if (PokemonImage2.src == dullImage) {
+      PokemonImage2.src = shinyImage;
+    } else {
+      PokemonImage2.src = dullImage;
+    }
+  });
+
 randomBtn.addEventListener("click", async()=>{
     let randomID = Math.floor(Math.random() * 649);
 
@@ -146,84 +164,94 @@ async function PokeLogic(pokeSearch) {
     }
 
     if (isGenOneThroughFive) {
+       
+        evolutionNames = [];
+
         nameOfPokemon = data.name[0].toUpperCase() + data.name.slice(1);
-
         updateHeartButtonState(); 
-
         idOfPokemon = data.id;
 
         let locationData = await LocationApi(idOfPokemon);
         let speciesData = await getPokemonApi(pokeSearch);
         evolutionChain = speciesData.evolution_chain.url; 
+        let chainData = await getEvolutionApi(evolutionChain);
 
-
-    console.log(speciesData)
-   
-
-    data.types.forEach((types) => {
-      types.type.name[0].toUpperCase() + types.type.name.slice(1);
-      typesOfPokemon.push(
-        types.type.name[0].toUpperCase() + types.type.name.slice(1)
-      );
-    });
-
-    data.abilities.forEach((abilities) => {
-        abilities.ability.name.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
-        abilitiesOfPokemon.push(abilities.ability.name.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" "));
-    });
-
-    data.moves.forEach((moves) => {
-        moves.move.name.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
-        movesOfPokemon.push(moves.move.name.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" "))
-    });
-
-    if (locationData.length > 0) {
-        locationData[0].location_area.name.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
-
-        locationOfPokemon.push(locationData[0].location_area.name.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" "))
-        PokemonLocation.innerText = `Locations: ${locationOfPokemon}`     
-    }
-    else
-    {
-        PokemonLocation.innerText = " Locations: N/A"
-    }
-
-    if(chainData.chain.evolves_to.length != null){
-
-        if (chainData.chain.evolves_to.length > 1){
-            for (let i = 0; i < chainData.chain.evolves_to.length; i++){
-                let pokemonID = await getPokemonApi(chainData.chain.evolves_to[i].species.name)
-                if(pokemonID.id < 650){
-                    evolutionNames.push(chainData.chain.evolves_to[i].species.name)
-                }
+        // Evolution Chain Logic
+        let currentChain = chainData.chain;
+        while (currentChain) {
+            let pokemonSpecies = await getPokemonApi(currentChain.species.name);
+            
+            if (pokemonSpecies.id < 650) {
+                evolutionNames.push(
+                    currentChain.species.name[0].toUpperCase() + 
+                    currentChain.species.name.slice(1)
+                );
             }
+
+            
+            currentChain = currentChain.evolves_to.length > 0 
+                ? currentChain.evolves_to[0] 
+                : null;
         }
-        else{
-                let evoChain = chainData.chain;
-                do {
-                    let checkPokeId = await getPokemonApi(newChain.species.name)
-                    if (checkPokeId.id < 650){
-                        evolutionNames.push(newChain.species.name)
-                    }
-                    
-                    evoChain = newChain.evolves_to[0];
-                } 
-                while (evoChain != null);
-            }
+
+      
+        data.types.forEach((types) => {
+            typesOfPokemon.push(
+                types.type.name[0].toUpperCase() + types.type.name.slice(1)
+            );
+        
+        });
+
+        data.abilities.forEach((abilities) => {
+            abilitiesOfPokemon.push(
+                abilities.ability.name.split("-")
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(" ")
+            );
+        });
+
+        data.moves.forEach((moves) => {
+            movesOfPokemon.push(
+                moves.move.name.split("-")
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(" ")
+            );
+        });
+
+        // Location handling
+        if (locationData.length > 0) {
+            locationOfPokemon = [
+                locationData[0].location_area.name.split("-")
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(" ")
+            ];
+            PokemonLocation.innerText = `Locations: ${locationOfPokemon}`;  
+            PokemonLocation2.innerText = `Locations: ${locationOfPokemon}`;    
+        } else {
+            PokemonLocation.innerText = "Locations: N/A";
+            PokemonLocation2.innerText = "Locations: N/A";
         }
+
+        shinyImage = data.sprites.front_shiny;
+        dullImage = data.sprites.front_default;
+
+        PokemonName.innerText = nameOfPokemon;
+        PokemonId.innerText = `#${idOfPokemon}`;
+        PokemonEvolution.innerText = evolutionNames.join(" → ");
+        PokemonType.innerText = `Types: ${typesOfPokemon.join(" | ")}`;
+        PokemonAbilities.innerText = abilitiesOfPokemon.join(" | ");
+        PokemonMoves.innerText = movesOfPokemon.join(" | ");
+        PokemonImage.src = dullImage;
+
+        PokemonName2.innerText = nameOfPokemon;
+        PokemonId2.innerText = `#${idOfPokemon}`;
+        PokemonEvolution2.innerText = evolutionNames.join(" → ");
+        PokemonType2.innerText = `Types: ${typesOfPokemon.join(" | ")}`;
+        PokemonAbilities2.innerText = abilitiesOfPokemon.join(" | ");
+        PokemonMoves2.innerText = movesOfPokemon.join(" | ");
+        PokemonImage2.src = dullImage;
     }
-
-    shinyImage = data.sprites.front_shiny;
-    dullImage = data.sprites.front_default;
-
-    PokemonName.innerText = nameOfPokemon;
-    PokemonId.innerText = `#${idOfPokemon}`;
-  
-    PokemonType.innerText = `Types: ${typesOfPokemon.join(" | ")}`;
-    PokemonAbilities.innerText = abilitiesOfPokemon.join(" | ");
-    PokemonMoves.innerText = movesOfPokemon.join(" | ");
-    PokemonImage.src = dullImage;
-  }
+}
 
 
 PokeLogic("Bulbasaur");
@@ -251,6 +279,22 @@ heartBtn.addEventListener('click', () => {
         console.log(`Removed from Favorites: ${nameOfPokemon}`);
         
         heartBtn.classList.remove('favorited');
+    }
+    loadFavorites();
+});
+
+heartBtn2.addEventListener('click', () => {
+    
+    if(!isPokemonFavorited(nameOfPokemon)) {
+        saveToLocalStorage(nameOfPokemon);
+        console.log(`Added to Favorites ${nameOfPokemon}`);
+        
+        heartBtn2.classList.add('favorited');
+    } else {
+        removeFromLocalStorage(nameOfPokemon);
+        console.log(`Removed from Favorites: ${nameOfPokemon}`);
+        
+        heartBtn2.classList.remove('favorited');
     }
     loadFavorites();
 });
@@ -284,8 +328,10 @@ async function loadFavorites() {
 function updateHeartButtonState() {
     if (isPokemonFavorited(nameOfPokemon)) {
         heartBtn.classList.add('favorited');
+        heartBtn2.classList.add('favorited');
     } else {
         heartBtn.classList.remove('favorited');
+        heartBtn2.classList.add('favorited');
     }
 }
 
