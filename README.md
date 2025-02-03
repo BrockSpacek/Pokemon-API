@@ -6,8 +6,9 @@ Description
 Create a single page pokemon application using the Pokemonapi
 
 ### Desktop 1440px, tablet 767px, mobile 425px
+## Credit Santi for helping with evolutions and Mike for helping with Location Logic
+# Will be coming back to work on project
 
-## Credit Santi for helping with evolutions and Mike for helping with
 Requirements:
 
 using the Pokemon API https://pokeapi.co/
